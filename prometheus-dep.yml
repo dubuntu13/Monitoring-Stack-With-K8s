@@ -1,13 +1,19 @@
-apiVersion: v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: prometheus-service
+  name: prometheus
 spec:
-  type: NodePort
+  replicas: 1
   selector:
-    app: prometheus-app
-  ports:
-    - protocol: TCP
-      port: 9090
-      targetPort: 9090
-      nodePort: 30090  # You can specify a port within the range 30000-32767
+    matchLabels:
+      app: prometheus-app
+  template:
+    metadata:
+      labels:
+        app: prometheus-app
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus
+        ports:
+        - containerPort: 9090
