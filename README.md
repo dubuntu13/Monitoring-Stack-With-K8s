@@ -1,37 +1,27 @@
-# monitoringStack-cluster
-Here’s a step-by-step guide to get started with the K8s Monitoring Suite:
-
-    Clone the Repository:
-
-    bash
-
+1. Clone the Repository:
+```
 git clone https://github.com/dubuntu13/K8s-Monitoring-Suite.git
 cd K8s-Monitoring-Suite
+```
 
-Create the Namespace:
+2. Create the Namespace:
+```
+kubectl create namespace monitoring-stack
+```
 
-bash
+3. Set Up Persistent Storage:
+```
+kubectl apply -f storageclass.yml
+cd prometheus-deploy
+kubectl apply -f persistantvolumeClaim.yml
+kubectl apply -f persistantvolume.yml
+```
 
-kubectl apply -f namespace.yaml
+4. Deploy Prometheus:
+```
+kubectl apply -f prometheus-dep.yml
+```
 
-Set Up Persistent Storage:
-
-bash
-
-kubectl apply -f storage.yaml
-
-Deploy Prometheus:
-
-bash
-
-kubectl apply -f prometheus.yaml
-
-Deploy Zabbix, Grafana, and Loki (Follow instructions in each specific YAML file in the repository):
-
-bash
-
-kubectl apply -f zabbix.yaml
-
-Access Services:
+5. Access Services:
 
     Prometheus: http://<node-ip>:30091
