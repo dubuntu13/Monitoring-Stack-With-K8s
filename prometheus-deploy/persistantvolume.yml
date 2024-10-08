@@ -1,8 +1,8 @@
-# Persistent Volume for Prometheus
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: prometheus-pv
+  namespace: monitoring-stack
 spec:
   capacity:
     storage: 10Gi
@@ -12,4 +12,3 @@ spec:
   hostPath:
     path: /mnt/prometheusDB
 
- Persistent Volume Claim for Prometheus
