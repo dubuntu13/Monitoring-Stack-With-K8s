@@ -24,4 +24,4 @@ kubectl apply -f prometheus-dep.yml
 
 5. Access Services:
 
-    Prometheus: http://<node-ip>:30091
+    Prometheus: http://nodeIP:30091
