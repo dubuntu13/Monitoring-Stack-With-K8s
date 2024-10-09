@@ -6,6 +6,9 @@ metadata:
 spec:
   replicas: 1
   serviceName: "prometheus-service"
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
   selector:
     matchLabels:
       app: prometheus-app
@@ -22,11 +25,20 @@ spec:
         volumeMounts:
         - name: prometheus-pvc
           mountPath: /prometheus
+        - name: prometheus-config-volume
+          mountPath: /etc/prometheus/prometheus.yml
+          subPath: prometheus.yml
         securityContext:
          runAsUser: 0  # Runs the container as root user
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            name: prometheus-config
   volumeClaimTemplates:
   - metadata:
       name: prometheus-pvc
+      labels:
+        app: prometheus-app
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: "monitoring-stack-storage-class" # Replace with your storage class
