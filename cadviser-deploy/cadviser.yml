@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cadvisor
+  namespace: kube-system  # Ensure this line specifies the kube-system namespace
+spec:
+  selector:
+    matchLabels:
+      app: cadvisor
+  template:
+    metadata:
+      labels:
+        app: cadvisor
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: cadvisor
+        image: gcr.io/cadvisor/cadvisor:latest
+        ports:
+        - containerPort: 8080
+          name: http-metrics
+        volumeMounts:
+        - name: rootfs
+          mountPath: /rootfs
+          readOnly: true
+        - name: var-run
+          mountPath: /var/run
+          readOnly: true
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+        - name: docker
+          mountPath: /var/lib/docker
+          readOnly: true
+      volumes:
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: docker
+        hostPath:
+          path: /var/lib/docker
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cadvisor-service
+  namespace: kube-system
+spec:
+  type: NodePort
+  selector:
+    app: cadvisor
+  ports:
+    - protocol: TCP
+      port: 8080       # Service port
+      targetPort: 8080 # Container port
+      nodePort: 30080  # Optional, for external access
+
