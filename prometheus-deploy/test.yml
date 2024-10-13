@@ -1,0 +1,188 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+  creationTimestamp: "2024-10-09T10:17:55Z"
+  generateName: kube-prometheus-stack-prometheus-node-exporter-
+  labels:
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/instance: kube-prometheus-stack
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prometheus-node-exporter
+    app.kubernetes.io/part-of: prometheus-node-exporter
+    app.kubernetes.io/version: 1.8.2
+    controller-revision-hash: d6c978d67
+    helm.sh/chart: prometheus-node-exporter-4.38.0
+    jobLabel: node-exporter
+    pod-template-generation: "1"
+    release: kube-prometheus-stack
+  name: kube-prometheus-stack-prometheus-node-exporter-99r9h
+  namespace: monitoring
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: DaemonSet
+    name: kube-prometheus-stack-prometheus-node-exporter
+    uid: 0f946c98-8f53-450d-8cb3-1dafdba8f195
+  resourceVersion: "79847072"
+  uid: eb94c21b-3e1f-4830-9b54-a423f392ad2b
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchFields:
+          - key: metadata.name
+            operator: In
+            values:
+            - k-worker-03
+  automountServiceAccountToken: false
+  containers:
+  - args:
+    - --path.procfs=/host/proc
+    - --path.sysfs=/host/sys
+    - --path.rootfs=/host/root
+    - --path.udev.data=/host/root/run/udev/data
+    - --web.listen-address=[$(HOST_IP)]:9100
+    - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+    - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+    env:
+    - name: HOST_IP
+      value: 0.0.0.0
+    image: quay.io/prometheus/node-exporter:v1.8.2
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 9100
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: node-exporter
+    ports:
+    - containerPort: 9100
+      hostPort: 9100
+      name: http-metrics
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 9100
+        scheme: HTTP
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources: {}
+    securityContext:
+      readOnlyRootFilesystem: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /host/proc
+      name: proc
+      readOnly: true
+    - mountPath: /host/sys
+      name: sys
+      readOnly: true
+    - mountPath: /host/root
+      mountPropagation: HostToContainer
+      name: root
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostNetwork: true
+  hostPID: true
+  nodeName: k-worker-03
+  nodeSelector:
+    kubernetes.io/os: linux
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+  serviceAccount: kube-prometheus-stack-prometheus-node-exporter
+  serviceAccountName: kube-prometheus-stack-prometheus-node-exporter
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoSchedule
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/pid-pressure
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/unschedulable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/network-unavailable
+    operator: Exists
+  volumes:
+  - hostPath:
+      path: /proc
+      type: ""
+    name: proc
+  - hostPath:
+      path: /sys
+      type: ""
+    name: sys
+  - hostPath:
+      path: /
+      type: ""
+    name: root
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2024-10-09T10:17:55Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2024-10-09T10:17:56Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2024-10-09T10:17:56Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2024-10-09T10:17:55Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://7b1e1fb1e7e88e4d900d46bf63a6831d92f681795977dbfb558fd5dd8f80d765
+    image: quay.io/prometheus/node-exporter:v1.8.2
+    imageID: sha256:71dc9668b154bd072420bf69f59140ceeac04b88cf300bfa24053eb02a04f169
+    lastState: {}
+    name: node-exporter
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2024-10-09T10:17:55Z"
+  hostIP: 192.168.149.44
+  phase: Running
+  podIP: 192.168.149.44
+  podIPs:
+  - ip: 192.168.149.44
+  qosClass: BestEffort
+  startTime: "2024-10-09T10:17:55Z"
